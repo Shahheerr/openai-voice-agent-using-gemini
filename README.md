@@ -1,97 +1,90 @@
-# 🎙️ Voice Agent Project
+# OpenAI Voice Agent using Gemini
 
-An **AI-powered voice assistant** built with [OpenAI Agents SDK](https://github.com/openai/agents),  
-capable of listening to your **voice input**, processing it with an intelligent agent, and responding back in **natural-sounding speech**.
+This repository demonstrates a minimal voice agent built with Gemini (via the OpenAI Agents SDK). The agent listens to your microphone, sends audio to the Gemini model, and speaks back responses. It's a lightweight example to show how to wire up OpenAI Agents SDK voice features, record audio, and run an agent loop locally.
 
----
+Project repo: https://github.com/Shahheerr/openai-voice-agent-using-gemini
 
-## 📂 Project Structure
-voice_agent_project/
-│
-├── configuration/
-│ └── gemini_config.py # model config (e.g., GPT, Gemini)
-│
-├── recorder.py # handles recording & playback
-├── agent_voice.py # agent + voice pipeline
-└── run_voice_agent.py # main entry point
+## Features
+- Microphone recording and audio playback
+- Integration with Gemini models using the OpenAI Agents SDK
+- Simple configuration via environment variables
 
----
+## Requirements
+- Python 3.13 or newer
+- A Gemini-enabled OpenAI API key and (optional) a custom base URL
 
-## ⚡ Features
-- Record and playback audio locally  
-- Send your voice input to an AI Agent  
-- Custom **TTS voice settings** (tone, speed, emotion, personality)  
-- Play back AI’s spoken response in real-time  
-- Modular design: easy to extend or swap models  
+Dependencies are declared in `pyproject.toml`. Key dependencies include:
+- openai (official OpenAI client)
+- openai-agents[voice]
+- sounddevice / pyaudio (for microphone I/O)
+- python-decouple (for environment configuration)
 
----
+## Quickstart
 
-## 🚀 Getting Started
+1. Clone the repository
 
-### 1️⃣ Clone the repo
-```bash
-git clone https://github.com/your-username/voice_agent_project.git
-cd voice_agent_project
-2️⃣ Install dependencies
+2. Create a virtual environment and install dependencies
 
-We use uv for package management:
-uv add "openai-agents[voice]==0.1.0" sounddevice numpy matplotlib
-3️⃣ Set your API key
+3. Set environment variables
 
-Either export it:
-export OPENAI_API_KEY="your_api_key_here"
-Or enter it securely at runtime when prompted.
+4. Run the voice agent
 
-4️⃣ Run the project
+Example (Windows PowerShell):
+
+```powershell
+git clone https://github.com/Shahheerr/openai-voice-agent-using-gemini.git
+cd "openai-voice-agent-using-gemini\voice-agent"
+python -m venv .venv; .\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -e .
+# or: pip install -r requirements.txt if you generate one
+
+# Set environment variables (PowerShell)
+$env:GEMINI_API_KEY = 'your_api_key_here'
+$env:GEMINI_BASE_URL = 'https://api.openai.com/v1'  # optional; set if you use a custom endpoint
+
+# Run the agent
 python run_voice_agent.py
+```
 
-🎛️ Configuration
+Notes:
+- The project uses `configuration/gemini_config.py` to configure the OpenAI / Gemini client. It reads `GEMINI_API_KEY` and `GEMINI_BASE_URL` from the environment.
+- The example `pyproject.toml` pins `openai-agents[voice]` which exposes the voice helpers used by the code.
 
-Model selection is handled via:
+## Configuration
 
-# configuration/gemini_config.py
-gemini_model = "gpt-4.1-nano"
+Edit or override `configuration/gemini_config.py` if you need a different model or run settings. By default it configures the agent to use `gemini-2.5-flash` via an async OpenAI client.
 
+Environment variables expected:
+- GEMINI_API_KEY - Your OpenAI/Gemini API key
+- GEMINI_BASE_URL - Optional base URL for custom endpoints
 
-You can replace "gpt-4.1-nano" with any supported model (e.g. "gpt-4.1", "gemini-pro", etc.).
-🧠 Workflow Overview
+## File overview
+- `run_voice_agent.py` — entrypoint to start the voice agent loop
+- `agent_voice.py` — main agent implementation and orchestration
+- `recorder.py` — microphone recording helpers
+- `configuration/gemini_config.py` — Gemini/OpenAI client and model configuration
 
-Recorder → Captures audio chunks from mic
+Open the files to learn how audio is captured, encoded, and sent to the agent using the OpenAI Agents SDK voice integrations.
 
-Playback → Plays recorded audio back
+## Troubleshooting
+- Microphone not detected: ensure your OS allows apps to access the microphone and the correct input device is selected. Try `sounddevice` examples or `pyaudio` utilities to verify.
+- Permissions/driver issues on Windows with `pyaudio`: install the wheel matching your Python version or use `sounddevice` (which may work without PyAudio).
+- API authentication errors: confirm `GEMINI_API_KEY` is set and valid.
+- Model or API errors: check `GEMINI_BASE_URL` if you're routing through a proxy or private endpoint.
 
-Agent → Processes text using OpenAI Agent SDK
+## Security notes
+- Keep your API keys secret. Do not commit them to version control.
 
-Voice Pipeline → Converts AI’s response to voice with custom TTS settings
+## Contributing
+Pull requests are welcome. Open an issue if you want guidance or find a bug.
 
-Speaker → Plays the final AI-generated voice
+## License
+This repo doesn't include an explicit license file. Add one if you want to grant permissions for reuse.
 
-flowchart LR
-    A[🎤 User Voice Input] --> B[📥 Recorder]
-    B --> C[🤖 Agent]
-    C --> D[🔊 Voice Pipeline]
-    D --> E[🎧 Speaker Output]
+---
 
-🎨 Example TTS Settings
-custom_tts_settings = TTSModelSettings(
-    instructions="""
-    Personality: upbeat, friendly, persuasive guide.
-    Tone: Friendly, clear, reassuring.
-    Tempo: Relatively fast, with natural pauses.
-    Emotion: Warm, supportive.
-    """
-)
-
-💡 Future Improvements
-
-Real-time streaming (continuous conversation)
-
-Multi-agent voice workflows
-
-Web UI for browser-based recording
-
-Save conversations to audio files
-
-📜 License
-
-MIT License © 2025
+If you'd like, I can also:
+- add a `requirements.txt` for easier install on Windows,
+- add a short usage demo script or unit test, or
+- expand the README with screenshots and sample audio clips.
