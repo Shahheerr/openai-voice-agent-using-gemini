@@ -41,7 +41,7 @@ pip install -e .
 
 # Set environment variables (PowerShell)
 $env:GEMINI_API_KEY = 'your_api_key_here'
-$env:GEMINI_BASE_URL = 'https://api.openai.com/v1'  # optional; set if you use a custom endpoint
+$env:GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/'  # optional; set if you use a custom endpoint
 
 # Run the agent
 python run_voice_agent.py
